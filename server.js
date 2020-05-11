@@ -4,7 +4,17 @@
 // we've started you off with Express (https://expressjs.com/)
 // but feel free to use whatever libraries or frameworks you'd like through `package.json`.
 const express = require("express");
+const http = require('http');
+const bodyparser = require("body-parser");
+const measurement_unit_route = require("./routes/measurement_unit_route");
+const category_route = require("./routes/category_route");
 const app = express();
+
+// keep app alive due to glitch constraints
+app.get("/", (request, response) => {
+  console.log(Date.now() + " Ping Received");
+  response.sendStatus(200);
+});
 
 // our default array of dreams
 const dreams = [
@@ -28,8 +38,21 @@ app.get("/dreams", (request, response) => {
   response.json(dreams);
 });
 
+
+app.use(bodyparser.urlencoded());
+
+
+// app.use("/", measurement_unit_route);
+app.use("/",category_route);
+
+
 // listen for requests :)
+/*
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
-  
+*/
+app.listen(process.env.PORT);
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
